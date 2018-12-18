@@ -1,0 +1,6 @@
+package projet;
+
+public class unecase {
+
+	int numero = 0;
+}
