@@ -37,23 +37,23 @@ public class Grille {
 		// Initialiser la grille
 		grille = new int[nbreLignes][nbreColonnes][2];
 
-		this.init(); // Initialiser à 0 les cases de la grille
+		this.init(); // Initialiser Ã  0 les cases de la grille
 		this.placerBombes(nbreBombes); // Affectation bombes
 		gameOver = false;
 	}
 
 	/* Accessors */
-	// Permet de donner un état voulu à la case
+	// Permet de donner un Ã©tat voulu Ã  la case
 	public void setState(int i, int j, int k) {
 		grille[i][j][1] = k;
 	}
 
-	// Permet de donner une valeur voulue à la case
+	// Permet de donner une valeur voulue Ã  la case
 	public void setValue(int i, int j, int k) {
 		grille[i][j][0] = k;
 	}
 
-	// Renvoie le nombre de bombes initialisé
+	// Renvoie le nombre de bombes initialisÃ©
 	public int getNbreBombes() {
 		return nbreBombes;
 	}
@@ -63,13 +63,13 @@ public class Grille {
 		return grille[ligne][colonne][0];
 	}
 
-	// Renvoie l'état de la case : 0 -> non découverte, 1 -> découverte, 2 ->
-	// drapeau placé
+	// Renvoie l'Ã©tat de la case : 0 -> non dÃ©couverte, 1 -> dÃ©couverte, 2 ->
+	// drapeau placÃ©
 	public int getState(int ligne, int colonne) {
 		return grille[ligne][colonne][1];
 	}
 
-	// Vérifie si la case est une bombe
+	// VÃ©rifie si la case est une bombe
 	public boolean isBomb(int ligne, int colonne) {
 		return (this.getValue(ligne, colonne) == bombe);
 	}
@@ -84,27 +84,27 @@ public class Grille {
 		return nbreColonnes;
 	}
 
-	// La partie est terminée
+	// La partie est terminÃ©e
 	public void gameIsOver() {
 		gameOver = true;
 	}
 
-	// Permet de traquer l'état de la partie
+	// Permet de traquer l'Ã©tat de la partie
 	public boolean getGameOver() {
 		return gameOver;
 	}
 
-	// Retourne le niveau sélectionné
+	// Retourne le niveau sÃ©lectionnÃ©
 	public int getLevel() {
 		return level;
 	}
 
 	private void init() {
-		// Procédure qui remplit les cases de 0 pour ne pas avoir de valeurs inattendues
+		// ProcÃ©dure qui remplit les cases de 0 pour ne pas avoir de valeurs inattendues
 		for (int i = 0; i < nbreLignes; i++) {
 			for (int j = 0; j < nbreColonnes; j++) {
-				this.setValue(i, j, 0); // Mettre à 0 la valeur
-				this.setState(i, j, 0); // Mettre à 0 l'état
+				this.setValue(i, j, 0); // Mettre Ã  0 la valeur
+				this.setState(i, j, 0); // Mettre Ã  0 l'Ã©tat
 			}
 		}
 	}
@@ -113,7 +113,7 @@ public class Grille {
 		int i, j, compteur = 0;
 		Random random = new Random();
 
-		// On génère une ligne et une colonne aléatoire pour la bombe
+		// On gÃ©nÃ¨re une ligne et une colonne alÃ©atoire pour la bombe
 		do {
 			i = random.nextInt(nbreLignes);
 			j = random.nextInt(nbreColonnes);
@@ -130,25 +130,25 @@ public class Grille {
 		int bombeProche = 0;
 
 		/*
-		 * Si la case même ne contient pas de bombe, on cherche les 8 cases autour pour
-		 * vérifier la présence de bombes
+		 * Si la case mÃªme ne contient pas de bombe, on cherche les 8 cases autour pour
+		 * vÃ©rifier la prÃ©sence de bombes
 		 */
-		if (this.getValue(i, j) != bombe) {
+			if (this.getValue(i, j) != bombe) {
 			if ((i - 1 >= 0) && (this.getValue(i - 1, j) == bombe))
 				bombeProche++;
 			if ((j - 1 >= 0) && (this.getValue(i, j - 1) == bombe))
 				bombeProche++;
-			if ((i + 1 >= 0) && (this.getValue(i + 1, j) == bombe))
+			if ((i + 1 >= 0) && (i+1<nbreLignes) && (this.getValue(i + 1, j) == bombe))
 				bombeProche++;
-			if ((j + 1 >= 0) && (this.getValue(i, j + 1) == bombe))
+			if ((j + 1 >= 0) && (j+1<nbreColonnes) && (this.getValue(i, j + 1) == bombe))
 				bombeProche++;
 			if ((i - 1 >= 0) && (j - 1 >= 0) && (this.getValue(i - 1, j - 1) == bombe))
 				bombeProche++;
-			if ((i + 1 >= 0) && (j + 1 >= 0) && (this.getValue(i + 1, j + 1) == bombe))
+			if ((i + 1 >= 0) && (i+1<nbreLignes) && (j + 1 >= 0) && (j+1<nbreColonnes) && (this.getValue(i + 1, j + 1) == bombe))
 				bombeProche++;
-			if ((i + 1 >= 0) && (j - 1 >= 0) && (this.getValue(i + 1, j - 1) == bombe))
+			if ((i + 1 >= 0) && (i+1<nbreLignes) && (j - 1 >= 0) && (this.getValue(i + 1, j - 1) == bombe))
 				bombeProche++;
-			if ((i - 1 >= 0) && (j + 1 >= 0) && (this.getValue(i - 1, j + 1) == bombe))
+			if ((i - 1 >= 0) && (j + 1 >= 0) && (j+1<nbreColonnes) && (this.getValue(i - 1, j + 1) == bombe))
 				bombeProche++;
 		} else
 			bombeProche = bombe;
@@ -159,14 +159,14 @@ public class Grille {
 	private void decouverteCase(int i, int j) {
 		int temp = 0;
 
-		// Si la case n'est pas découverte
+		// Si la case n'est pas dÃ©couverte
 		if (this.getState(i, j) == 0) {
-			this.setState(i, j, 1); // On la passe à l'état 1 donc découverte
+			this.setState(i, j, 1); // On la passe Ã  l'Ã©tat 1 donc dÃ©couverte
 
-			temp = bombesProches(i, j); // On récupère le nombre de bombes sur les 8 cases qui l'entourent
-			this.setValue(i, j, temp); // On donne la valeur à la case en fonction des bombes proches
+			temp = bombesProches(i, j); // On rÃ©cupÃ¨re le nombre de bombes sur les 8 cases qui l'entourent
+			this.setValue(i, j, temp); // On donne la valeur Ã  la case en fonction des bombes proches
 
-			// On découvre les cases de manière récursive
+			// On dÃ©couvre les cases de maniÃ¨re rÃ©cursive
 			if (temp == 0) {
 				if (i > 0)
 					this.decouverteCase(i - 1, j);
