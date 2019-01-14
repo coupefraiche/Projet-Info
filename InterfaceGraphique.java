@@ -58,7 +58,7 @@ public class Main extends Application implements FocusListener {
 			Group root = new Group();
 			 Label text1 = new Label();
 		        text1.setAlignment(Pos.TOP_LEFT);
-		       // text1.setText(Integer.toUnsignedString(score.getScore()));
+		    //    text1.setText(Integer.toString(score.getScore().));
 		        text1.setPadding(new Insets(0, 0, 0, 0));
 		        HBox Score = new HBox();
 		        Score.setAlignment(Pos.TOP_LEFT);
@@ -86,11 +86,12 @@ int carre=25;
 				btnNumber.setOnAction(new EventHandler<ActionEvent>() {
 						    public void handle(ActionEvent event) {
 						    	grille.decouverteCase(GridPane.getColumnIndex(btnNumber),GridPane.getRowIndex(btnNumber));
-						    	verif(GridPane.getColumnIndex(btnNumber), GridPane.getRowIndex(btnNumber), btnNumber);
+						    	couleur(GridPane.getColumnIndex(btnNumber), GridPane.getRowIndex(btnNumber), btnNumber);
 						    	//verif_voisin(GridPane.getColumnIndex(btnNumber), GridPane.getRowIndex(btnNumber), btnNumber);
 						    	//btnNumber.setStyle("-fx-background-color: white ");	
 								//btnNumber.setStyle("-fx-text-fill: Color=red");
 						    }
+						  //  public void 
 					});	
 						
 				grid.add(btnNumber, i, j);
@@ -156,7 +157,7 @@ int carre=25;
 		launch(args);
 	}
 	
-	public void verif(int i, int j, Button btnNumber) {
+	public void couleur(int i, int j, Button btnNumber) {
 		if(grille.getState(i, j)==1 && 1<=grille.getValue(i, j) && 8>=grille.getValue(i, j)) { //Chiffre
 		if((grille.getValue(i, j)%3)==1) btnNumber.setStyle("-fx-background-color: white;-fx-border-color: black; -fx-text-fill: blue;");
 		if((grille.getValue(i, j)%3)==2) btnNumber.setStyle("-fx-background-color: white;-fx-border-color: black; -fx-text-fill: green;");	
