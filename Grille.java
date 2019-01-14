@@ -1,6 +1,22 @@
-package project;
+package application;
 
+import java.lang.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.JPanel;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import java.util.Random;
+
+import javafx.scene.control.Button;
 
 public class Grille {
 	// Attributs
@@ -8,7 +24,7 @@ public class Grille {
 	private int grille[][][] = null;
 	private final int bombe = 666;
 	private boolean gameOver;
-	private int level;
+	private int level=1;
 
 	/* Constructeur */
 	public Grille(int niveau) {
@@ -123,7 +139,7 @@ public class Grille {
 				this.setValue(i, j, bombe);
 			}
 			compteur++;
-		} while (compteur < nbreBombes);
+		} while (compteur <= nbreBombes);
 	}
 
 	private int bombesProches(int i, int j) {
@@ -133,7 +149,7 @@ public class Grille {
 		 * Si la case même ne contient pas de bombe, on cherche les 8 cases autour pour
 		 * vérifier la présence de bombes
 		 */
-			if (this.getValue(i, j) != bombe) {
+		if (this.getValue(i, j) != bombe) {
 			if ((i - 1 >= 0) && (this.getValue(i - 1, j) == bombe))
 				bombeProche++;
 			if ((j - 1 >= 0) && (this.getValue(i, j - 1) == bombe))
@@ -156,7 +172,7 @@ public class Grille {
 		return bombeProche;
 	}
 
-	private void decouverteCase(int i, int j) {
+	public void decouverteCase(int i, int j) {
 		int temp = 0;
 
 		// Si la case n'est pas découverte
@@ -188,6 +204,7 @@ public class Grille {
 		}
 	}
 
+		
 	public void decouverteBombes() { // Seulement si la partie est finie
 		for (int i = 0; i < nbreLignes; i++) {
 			for (int j = 0; j < nbreColonnes; j++) {
@@ -206,7 +223,6 @@ public class Grille {
 				if(this.getState(i, j) == 1) compteur++;
 			}
 		}
-		
 		return ((nbreLignes*nbreColonnes)-compteur == this.getNbreBombes());
 	}
 }
