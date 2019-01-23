@@ -3,6 +3,7 @@ type etat is (un,deux,trois,quatre,cinq,six,sept);
 signal etat_present : etat;
 signal etat_futur : etat;
 signal EN_TETE :STD_LOGIC;
+signal QQ : STD_LOGIC_VECTOR (8 downto 0);
 begin
 
 --DEFINIR LES ETATS
