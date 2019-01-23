@@ -1,9 +1,49 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date:    10:32:48 01/16/2019 
+-- Design Name: 
+-- Module Name:    entre - Behavioral 
+-- Project Name: 
+-- Target Devices: 
+-- Tool versions: 
+-- Description: 
+--
+-- Dependencies: 
+--
+-- Revision: 
+-- Revision 0.01 - File Created
+-- Additional Comments: 
+--
+----------------------------------------------------------------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+---- Uncomment the following library declaration if instantiating
+---- any Xilinx primitives in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity entre is
+    Port ( EDETEC : in  STD_LOGIC;
+           CLK : in  STD_LOGIC;
+           RST : in  STD_LOGIC;
+           SDETEC : out  STD_LOGIC_VECTOR (6 downto 0);
+           SBITPAR : out  STD_LOGIC;
+           SVAL : out  STD_LOGIC);
+end entre;
+
+
+
 architecture Behavioral of entre is
 type etat is (un,deux,trois,quatre,cinq,six,sept);
 signal etat_present : etat;
 signal etat_futur : etat;
 signal EN_TETE :STD_LOGIC;
-signal QQ : STD_LOGIC_VECTOR (8 downto 0);
+signal QQ : STD_LOGIC_VECTOR (6 downto 0);
 begin
 
 --DEFINIR LES ETATS
@@ -52,32 +92,26 @@ case etat_present is
 	when others => null;					
 
 	end case;
-	
-	
-
 end process;
-		
 
-		--TRANSFORMATION SERIE-PARRALLELE
+
+
+--TRANSFORMATION SERIE-PARRALLELE
 process(CLK)
 variable compteur : integer;
 variable verif_en_tete : integer; 
 begin
 if EN_TETE = '1' then verif_en_tete:= 1;end if;
- 
-if RST='1' then QQ<=(others=>'0');
-elsif CLK='1' and CLK'event then 
+if CLK='1' and CLK'event then 
 		if verif_en_tete = 1 then
-					for i in 8 downto 1 loop
-					QQ(i)<=QQ(i-1);
-					end loop;	
-					QQ(0)<=EDETEC;	
-		end if ;
+					QQ <= "0000000";
+						--if compteur = 6 then compteur := 0; end if;
+
+		end if;
 end if ;
 end process;
 
-SDETEC <= QQ (7 downto 1);
-SBITPAR  <= QQ (0);
-
+SDETEC <= QQ ;
 
 end Behavioral;
+
