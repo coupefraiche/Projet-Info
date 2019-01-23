@@ -55,6 +55,28 @@ case etat_present is
 	
 
 end process;
+		
+
+		--TRANSFORMATION SERIE-PARRALLELE
+process(CLK)
+variable compteur : integer;
+variable verif_en_tete : integer; 
+begin
+if EN_TETE = '1' then verif_en_tete:= 1;end if;
+ 
+if RST='1' then QQ<=(others=>'0');
+elsif CLK='1' and CLK'event then 
+		if verif_en_tete = 1 then
+					for i in 8 downto 1 loop
+					QQ(i)<=QQ(i-1);
+					end loop;	
+					QQ(0)<=EDETEC;	
+		end if ;
+end if ;
+end process;
+
+SDETEC <= QQ (7 downto 1);
+SBITPAR  <= QQ (0);
 
 
 end Behavioral;
