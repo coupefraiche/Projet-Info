@@ -31,6 +31,7 @@ entity Detection_trame is
     Port ( EDETEC : in  STD_LOGIC;
            CLK : in  STD_LOGIC;
            RESET : in  STD_LOGIC;
+			  --RESET2 : in STD_LOGIC;
            SDETEC : out  STD_LOGIC_VECTOR (6 downto 0);
            SBITPAR : out  STD_LOGIC;
            SVAL : out  STD_LOGIC);
@@ -41,8 +42,8 @@ architecture Behavioral of Detection_trame is
 type etat is (un,deux,trois,quatre,cinq,six,sept);
 signal etat_present : etat;
 signal etat_futur : etat;
-signal EN_TETE : STD_LOGIC;
-signal QQ : STD_LOGIC_VECTOR (6 downto 0);
+signal EN_TETE :STD_LOGIC;
+signal QQ : STD_LOGIC_VECTOR (7 downto 0);
 begin
 
 --DEFINIR LES ETATS
@@ -61,10 +62,10 @@ etat_futur<=etat_present;
 EN_TETE<='0';
 case etat_present is
 
-	when un => if EDETEC='1' then etat_futur<=deux;
+	when un 		=> if EDETEC='1' then etat_futur<=deux;
 								end if;
 					
-	when deux => if EDETEC='0' then etat_futur<=trois;
+	when deux	=> if EDETEC='0' then etat_futur<=trois;
 						end if;
 						
 	when trois =>	if EDETEC='1' then etat_futur<=quatre;
@@ -84,33 +85,32 @@ case etat_present is
 						end if;
 						
 	when sept => if EDETEC='1' then etat_futur<=deux;
-										EN_TETE<='1';
-										else etat_futur<=un;		 
+									 else etat_futur<=un;		 
 						end if;
+						EN_TETE<='1';
+						
 	when others => null;					
 
 	end case;
 end process;
-		
 
 		--TRANSFORMATION SERIE-PARRALLELE
-process(CLK)
-variable compteur : integer range 0 to 19;
-variable verif_en_tete : integer; 
+process(CLK, RESET)
+variable compteur : integer range 0 to 8:=0;
+variable verif_en_tete : integer:=0; 
 begin
 if EN_TETE = '1' then verif_en_tete:= 1;
-compteur := 0;
+QQ<=(others=>'0');
+compteur:=0;
 end if;
- 
-if RESET='1' then QQ(6 downto 0)<="0000000";
 
-elsif CLK='1' and CLK'event then 
+if CLK='1' and CLK'event then 
 		if verif_en_tete = 1 then
-					if compteur > 6 and compteur < 14
-						then QQ(compteur-7)<=EDETEC;
+					if compteur >=0 and compteur < 8
+						then QQ(compteur)<=EDETEC;
 						compteur:=compteur+1;
-					elsif compteur = 19
-						then EN_TETE<='0';
+					elsif compteur = 8
+						then
 						verif_en_tete:=0;
 					else compteur:=compteur+1;
 			end if ;
@@ -118,7 +118,7 @@ elsif CLK='1' and CLK'event then
 end if;
 end process;
 
-SDETEC <= QQ (6 downto 0);
+SDETEC <= QQ (7 downto 1);
 SBITPAR  <= QQ (0);
 
 
