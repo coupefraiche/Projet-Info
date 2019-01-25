@@ -1,0 +1,146 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date:    10:40:02 01/22/2019 
+-- Design Name: 
+-- Module Name:    DETECTER_Nouveau - Behavioral 
+-- Project Name: 
+-- Target Devices: 
+-- Tool versions: 
+-- Description: 
+--
+-- Dependencies: 
+--
+-- Revision: 
+-- Revision 0.01 - File Created
+-- Additional Comments: 
+--
+----------------------------------------------------------------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+---- Uncomment the following library declaration if instantiating
+---- any Xilinx primitives in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity Detection_trame is
+    Port ( EDETEC : in  STD_LOGIC;
+           CLK : in  STD_LOGIC;
+           RESET : in  STD_LOGIC;
+			  --RESET2 : in STD_LOGIC;
+           SDETEC : out  STD_LOGIC_VECTOR (6 downto 0);
+           SBITPAR : out  STD_LOGIC;
+           SVAL : out  STD_LOGIC);
+end Detection_trame;
+
+architecture Behavioral of Detection_trame is
+
+type etat is (un,deux,trois,quatre,cinq,six,sept);
+signal etat_present : etat;
+signal etat_futur : etat;
+signal EN_TETE :STD_LOGIC;
+signal QQ : STD_LOGIC_VECTOR (7 downto 0);
+signal BITPAR : STD_LOGIC;
+signal VERIF_ENTETE : STD_LOGIC;
+begin
+--DEFINIR LES ETATS
+process (CLK,RESET,etat_futur)
+begin
+if RESET='1' then etat_present<=un;	
+						
+	elsif (CLK'event and CLK='1') then etat_present<=etat_futur;
+end if;	
+end process;
+
+--DETECTION DE L'ENTETE "101011"
+process(EDETEC,etat_present)
+begin
+etat_futur<=etat_present;
+EN_TETE<='0';
+if VERIF_ENTETE = '0' then 
+case etat_present is
+
+	when un 		=> if EDETEC='1' then etat_futur<=deux;
+								end if;
+					
+	when deux	=> if EDETEC='0' then etat_futur<=trois;
+						end if;
+						
+	when trois =>	if EDETEC='1' then etat_futur<=quatre;
+									 else etat_futur<=un;
+						end if;
+						
+	when quatre => if EDETEC='0' then etat_futur<=cinq;
+									 else etat_futur<=deux;		 
+						end if;
+						
+	when cinq => if EDETEC='1' then etat_futur<=six;
+									 else etat_futur<=un;		 
+						end if;
+						
+	when six => if EDETEC='1' then etat_futur<=sept;
+									 else etat_futur<=cinq;		 
+						end if;
+						
+	when sept => 	if EDETEC='1' then etat_futur<=deux;
+									 else etat_futur<=un;		 
+						end if;
+						if etat_futur = sept then EN_TETE<='0';
+								else EN_TETE<='1';	
+end if;								
+	when others => null;					
+
+	end case;
+	end if;
+end process;
+
+		--TRANSFORMATION SERIE-PARRALLELE
+process(CLK, RESET)
+variable compteur : integer range 0 to 7:=0;
+--variable verif_en_tete : integer:=0;
+variable N : integer:=0;
+begin
+
+if RESET = '1' then VERIF_ENTETE <='0';
+						compteur:=0;
+end if;
+
+if EN_TETE = '1' then VERIF_ENTETE <= '1';
+						compteur:=0;
+end if;
+
+SVAL<='0';
+
+if CLK='1' and CLK'event then
+		if VERIF_ENTETE = '1' then
+					if compteur >=0 and compteur < 8
+						then QQ(compteur)<=EDETEC;
+							if EDETEC = '1' AND compteur >=1 then N := N+1;
+							end if;
+						compteur:=compteur+1;
+						
+					elsif compteur = 8
+						then 
+						VERIF_ENTETE <= '0';
+						if N mod 2 = 1 
+							then BITPAR <= '1';
+						else BITPAR <= '0';
+						end if;
+						if BITPAR = QQ(0) then SBITPAR <= '0';
+						else SBITPAR <= '1';
+						end if;
+						compteur:=0;
+					else compteur:=compteur+1;
+			end if ;
+	end if ;
+end if;
+if compteur = 8 then SVAL <= '1';end if; 
+end process;
+
+SDETEC <= QQ (6 downto 0);
+
+end Behavioral;
